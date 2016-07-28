@@ -10,7 +10,12 @@
         MinHeight="200"
         MinWidth="400"
         >
-    <Grid>
+    <Window.Resources>
+        <local:BoolToInvertedVisibilityConverter x:Key="boolToInvertedVisibilityConverter"/>
+    </Window.Resources>
+
+
+    <Grid KeyDown="Grid_KeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
@@ -66,30 +71,23 @@
         </Border>
 
         <Border Grid.Column="0" Grid.Row="1">
-            <ListView x:Name="fileListView" BorderBrush="{StaticResource BackgroundGreyBrush}" BorderThickness="0,0,1,0">
-                
+            <ListView x:Name="fileListView" 
+                      BorderBrush="{StaticResource BackgroundGreyBrush}" 
+                      BorderThickness="0,0,1,0"
+                      SelectionChanged="fileListView_SelectionChanged"
+                      >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <Label Content="{Binding Name}"/>
+                            <Label Content="*" Visibility="{Binding IsSaved, Converter={StaticResource boolToInvertedVisibilityConverter}}"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
         </Border>
+
+        <Frame x:Name="editorFrame" Grid.Column="1" Grid.Row="1" ></Frame>
         
-        <Border Margin="16" Grid.Row="1" Grid.Column="1">
-            <ScrollViewer>
-                <RichTextBox HorizontalAlignment="Left"
-                         BorderThickness="0"
-                         x:Name="editorTextBox" 
-                         FontFamily="/Phantom;component/Fonts/#Bitstream Vera Sans Mono" 
-                         FontSize="14" SpellCheck.IsEnabled="True" KeyDown="editorTextBox_KeyDown" >
-                    <FlowDocument x:Name="editorDocument" LineHeight="1" >
-
-                    </FlowDocument>
-                </RichTextBox>
-            </ScrollViewer>
-        </Border>
-
-        <WebBrowser x:Name="previewWindow"
-                    Margin="16"
-                    Grid.Row="1"
-                    Visibility="Hidden" 
-                    KeyDown="editorTextBox_KeyDown" Grid.Column="1" >
-        </WebBrowser>
     </Grid>
 </Window>

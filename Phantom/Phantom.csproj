@@ -116,10 +116,20 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BoolToInvertedVisibilityConverter.cs" />
+    <Compile Include="EditorFile.cs" />
+    <Compile Include="EditorPage.xaml.cs">
+      <DependentUpon>EditorPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileManager.cs" />
     <Compile Include="Resources\StyleSheet.cs" />
     <Compile Include="TextHandler.cs" />
     <Compile Include="Updater.cs" />
     <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditorPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

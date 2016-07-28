@@ -16,6 +16,30 @@
         <Color x:Key="Dark">#373F45</Color>
         <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource Dark}"></SolidColorBrush>
 
+
+
+
+
+        <Style TargetType="{x:Type Frame}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Frame}">
+
+                        <AdornerDecorator>
+                            <ContentPresenter Name="PART_NavWinCP" 
+                              ClipToBounds="true"/>
+                        </AdornerDecorator>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
+
+
+
         <Style x:Key="FileButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
