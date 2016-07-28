@@ -1,0 +1,39 @@
+﻿<Window x:Class="Phantom.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Phantom"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="About Phantom" Height="280" Width="300">
+    <Grid>
+        <Border Margin="16">
+            <StackPanel>
+                <TextBlock Text="{Binding Version}" HorizontalAlignment="Center" FontSize="22"></TextBlock>
+                <Separator Background="Transparent" Margin="0,0,0,20"></Separator>
+
+                <TextBlock FontSize="14" FontWeight="Light" TextAlignment="Justify" Text="Phantom is free to use and distribute.  If you distribute this program, it must be unmodified and free of charge.  If you enjoy using Phantom, please consider supporting Vaporsoft." TextWrapping="Wrap" HorizontalAlignment="Stretch"></TextBlock>
+                <Separator Background="Transparent" Margin="0,0,0,20"></Separator>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="donateButton"
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource TextButtonStyle}"
+                            Template="{StaticResource TextButtonTemplate}"
+                            Content="Donate" Click="donateButton_Click"
+                              />
+                    <Separator Background="Transparent" Margin="0,0,10,0"></Separator>
+
+                    <Button x:Name="websiteButton"
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource TextButtonStyle}"
+                            Template="{StaticResource TextButtonTemplate}"
+                            Content="Website" Click="websiteButton_Click"
+                              />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -4,6 +4,164 @@
              xmlns:local="clr-namespace:Phantom"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <Color x:Key="BackgroundGrey">#E9EEF0</Color>
+        <SolidColorBrush x:Key="BackgroundGreyBrush" Color="{StaticResource BackgroundGrey}"/>
+
+        <Color x:Key="MediumGrey">#C7D0D4</Color>
+        <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource MediumGrey}"/>
+
+        <Color x:Key="SelectBlue">#C5D9E6</Color>
+
+        <Color x:Key="Dark">#373F45</Color>
+        <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource Dark}"></SolidColorBrush>
+
+        <Style x:Key="FileButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="FontFamily" Value="/Phantom;component/Fonts/#Pe-icon-7-stroke" />
+            <Setter Property="Padding" Value="6px" />
+            <Setter Property="Foreground" Value="{StaticResource DarkBrush}"/>
+        </Style>
+
+        <ControlTemplate x:Key="FileButtonTemplate" TargetType="{x:Type ButtonBase}">
+            <Border x:Name="border" CornerRadius="4" BorderBrush="Transparent" BorderThickness="1" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="{StaticResource BackgroundGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                            <ColorAnimation To="{StaticResource MediumGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="BorderBrush.Color"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="Transparent" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                            <ColorAnimation To="Transparent" 
+                                            Duration="0:0:0:0.2" BeginTime="0:0:0:0.1" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="BorderBrush.Color"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="UIElement.PreviewMouseLeftButtonDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="{StaticResource SelectBlue}" 
+                                            Duration="0:0:0:0" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                            <ColorAnimation To="Transparent"
+                                            Duration="0:0:0:0" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="BorderBrush.Color"/>
+                        </Storyboard>
+
+                    </BeginStoryboard>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="UIElement.PreviewMouseLeftButtonUp">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="{StaticResource BackgroundGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                            <ColorAnimation To="{StaticResource MediumGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="BorderBrush.Color"/>
+                        </Storyboard>
+
+                    </BeginStoryboard>
+                </EventTrigger>
+
+
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+
+
+
+
+
+        <Style x:Key="TextButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Padding" Value="24,6,24,8" />
+            <Setter Property="Foreground" Value="{StaticResource DarkBrush}"/>
+            <Setter Property="FontWeight" Value="Light"/>
+        </Style>
+
+        <ControlTemplate x:Key="TextButtonTemplate" TargetType="{x:Type ButtonBase}">
+            <Border x:Name="border" CornerRadius="4" BorderBrush="{StaticResource DarkGreyBrush}" BorderThickness="1" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="{StaticResource BackgroundGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                            <ColorAnimation To="{StaticResource MediumGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="BorderBrush.Color"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="Transparent" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="UIElement.PreviewMouseLeftButtonDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="{StaticResource SelectBlue}" 
+                                            Duration="0:0:0:0" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                            <ColorAnimation To="Transparent"
+                                            Duration="0:0:0:0" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="BorderBrush.Color"/>
+                        </Storyboard>
+
+                    </BeginStoryboard>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="UIElement.PreviewMouseLeftButtonUp">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation To="{StaticResource BackgroundGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="Background.Color"/>
+                            <ColorAnimation To="{StaticResource MediumGrey}" 
+                                            Duration="0:0:0:0.2" Storyboard.TargetName="border" 
+                                            Storyboard.TargetProperty="BorderBrush.Color"/>
+                        </Storyboard>
+
+                    </BeginStoryboard>
+                </EventTrigger>
+
+
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
     </Application.Resources>
 </Application>
