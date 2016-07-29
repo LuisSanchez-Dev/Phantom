@@ -10,7 +10,7 @@
       Title="EditorPage">
 
     <Grid>
-        <ScrollViewer Padding="16" Grid.Row="1" Grid.Column="1">
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
             <RichTextBox HorizontalAlignment="Left"
                         BorderThickness="0"
                         x:Name="editorTextBox" 

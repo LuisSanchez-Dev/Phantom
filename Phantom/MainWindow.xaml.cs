@@ -25,8 +25,7 @@ namespace Phantom
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string FILTER = "Markdown Document (.md)|*.md|Web Document (.html)|*.html";
-        bool savedSinceLastChange = true;
+        const string FILTER = "Markdown Document (.md)|*.md|Web Document (.html)|*.html|Text File (.txt)|*.txt";
 
         const string BASE_TITLE = "Phantom";
 
@@ -38,16 +37,30 @@ namespace Phantom
             this.Loaded += MainWindow_Loaded;
 
             fileListView.ItemsSource = FileManager.Files;
+            fileListView.SelectionChanged += FileListView_SelectionChanged;
+        }
+
+        private void FileListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FileManager.Files.Count == 0)
+            {
+                // no more files, disable the editor.
+                rightHandGrid.Visibility = Visibility.Hidden;
+
+            }else
+            {
+                rightHandGrid.Visibility = Visibility.Visible;
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // open a new file
-            FileManager.AddAndFocus("New File");
-            ChangeToCurrentFile();
+            var file = new EditorFile("New File");
+            FileManager.Files.Add(file);
+            FileManager.CurrentFile = file;
+            FocusOpenedFile(file);
             
-            FileManager.Files.Add(new EditorFile("New File 2"));
-
             // check for updates
             Updater.BeginUpdateTimer();
         }
@@ -55,6 +68,7 @@ namespace Phantom
         private void ChangeToCurrentFile()
         {
             editorFrame.Navigate(FileManager.CurrentFile.Page);
+            currentFileName.DataContext = FileManager.CurrentFile;
             this.Title = $"{BASE_TITLE} - {FileManager.CurrentFile.Name}";
         }
 
@@ -68,6 +82,26 @@ namespace Phantom
             FileManager.CurrentFile.IsSaved = true;
         }
 
+        private void CloseCurrentFile()
+        {
+            if (!FileManager.CurrentFile.IsSaved) {
+                var msg = MessageBox.Show("Would you like to save changes before closing this file?", null, MessageBoxButton.YesNoCancel);
+                if (msg == MessageBoxResult.Cancel)
+                    return;
+                if (msg == MessageBoxResult.Yes)
+                    if (!SaveFile())
+                        return;
+            }
+
+            var index = FileManager.Files.IndexOf(FileManager.CurrentFile);
+            FileManager.Files.Remove(FileManager.CurrentFile);
+            currentFileName.DataContext = null;
+            if (FileManager.Files.Count > 0)
+            {
+                FocusOpenedFile(FileManager.Files.LastOrDefault());
+            }
+        }
+
 
         private void saveFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -76,7 +110,7 @@ namespace Phantom
 
         private void saveAsButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveFile();
+            SaveFile(true);
         }
 
         private void openFileButton_Click(object sender, RoutedEventArgs e)
@@ -84,77 +118,85 @@ namespace Phantom
             OpenFile();
         }
 
+        private void FocusOpenedFile(EditorFile file)
+        {
+            var desiredFile = FileManager.Files.Where(x => x == file);
+
+            // if our file exists
+            if (desiredFile.Count() > 0)
+            {
+                fileListView.SelectedItems.Clear();
+                fileListView.SelectedItem = desiredFile.First();
+            }
+        }
 
         private void OpenFile()
         {
+            // if we're not explicity opening a file from a path, show a dialog
 
-            // first, check if we have unsaved changes
-        //    if (!savedSinceLastChange)
-        //    {
-        //        MessageBoxResult msg = MessageBox.Show("You have unsaved changes.  Would you like to save the current file before opening a different one?", "", MessageBoxButton.YesNoCancel);
-        //
-        //        if (msg == MessageBoxResult.Yes)
-        //        {
-        //            var save = QuickSave();
-        //            if (!save)
-        //                return;
-        //        }
-        //        else if (msg == MessageBoxResult.Cancel)
-        //            return;
-        //    }
-        //
-        //    OpenFileDialog dlg = new OpenFileDialog();
-        //    dlg.Filter = FILTER;
-        //
-        //    Nullable<bool> result = dlg.ShowDialog();
-        //    if (result == true)
-        //    {
-        //        // first, get the extension we opened the file as and cast it to the correct filetype
-        //        var fileType = (FileType)dlg.FilterIndex;
-        //
-        //        // next, open our file as a string
-        //        var file = File.ReadAllText(dlg.FileName);
-        //
-        //        // set the filename and type in our texthandler so we can save this easily in the future.
-        //        TextHandler.QuickSaveData = new Tuple<string, FileType>(dlg.FileName, fileType);
-        //
-        //        // set the filename in our window title
-        //        currentlyOpenFileName = System.IO.Path.GetFileName(dlg.FileName);
-        //        this.Title = $"{BASE_TITLE} - {currentlyOpenFileName}";
-        //
-        //        // open the file accordingly
-        //        if (fileType == FileType.HTML)
-        //        {
-        //            editorDocument.Blocks.Clear();
-        //            editorDocument.Blocks.Add(
-        //                new Paragraph(
-        //                    new Run(
-        //                        TextHandler.Convert(file, FileType.Markdown, FileType.HTML)
-        //                        )));
-        //        }
-        //
-        //        if (fileType == FileType.Markdown)
-        //        {
-        //            editorDocument.Blocks.Clear();
-        //            editorDocument.Blocks.Add(
-        //                new Paragraph(
-        //                    new Run(
-        //                        file
-        //                        )));
-        //        }
-        //
-        //        savedSinceLastChange = true;
-        //    }
-        }
+            // open a dialog
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = FILTER;
+
+            Nullable<bool> result = dlg.ShowDialog();
+            if (result == true)
+            {
+
+                // first, get the extension we opened the file as and cast it to the correct filetype
+                var fileType = (FileType)dlg.FilterIndex;
+
+                // get our file path
+                var filePath = dlg.FileName;
+
+                // create a new file in our List
+                var file = new EditorFile(true, filePath, fileType);
+
+                // make sure we don't already have this file of the same path open 
+                if (FileManager.Files.Where(x => x.FilePath == file.FilePath).Count() > 0)
+                {
+                    // we already have this file open, let's just focus the file
+                    FocusOpenedFile(file);
+                }
+                else
+                {
+                    // we don't have this file open yet, lets add it and do stuff
+                    FileManager.Files.Add(file);
+
+                    // open the file accordingly
+                    string fileString = File.ReadAllText(file.FilePath);
+
+                    // the final content we output to the editor
+                    string content = "";
 
 
-        private void SaveFile()
+                    if (fileType == FileType.HTML)
+                        content = TextHandler.Convert(fileString, fileType, FileType.Markdown);
+                    else if (fileType == FileType.Markdown || fileType == FileType.Text)
+                        content = fileString;
+
+                    // set the content
+                    file.Page.editorDocument.Blocks.Add(
+                            new Paragraph(
+                                new Run(
+                                    content
+                                    )));
+
+                    FocusOpenedFile(file);
+                }
+            }
+            
+
+
+         }
+
+
+        private bool SaveFile(bool forceDialog = false)
         {
             string filePath = "";
             FileType fileType = FileType.None;
 
             // check if our filepath is currently set (meaning we've saved before)
-            if (string.IsNullOrEmpty(FileManager.CurrentFile.FilePath))
+            if (string.IsNullOrEmpty(FileManager.CurrentFile.FilePath) || forceDialog)
             {
                 // open the dialog to save
                 Nullable<bool> result = false;
@@ -170,7 +212,7 @@ namespace Phantom
                 if (!result.Value)
                 {
                     // operation was cancelled
-                    return;
+                    return false;
                 }
 
                 if ((FileType)dlg.FilterIndex != FileType.None)
@@ -213,40 +255,41 @@ namespace Phantom
             // let our file know that we're all up to date
             FileManager.CurrentFile.IsSaved = true;
             MarkFileAsSaved();
-        }
 
-            
-
-        private void editorTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            
+            return true;
         }
 
         private void ShowPreview()
         {
-           // if (previewWindow.Visibility == Visibility.Hidden)
-           // {
-           //     BackgroundWorker worker = new BackgroundWorker();
-           //     string html = "";
-           //     worker.DoWork += ((object sender, DoWorkEventArgs e) =>
-           //     {
-           //         html = TextHandler.Convert(new TextRange(editorDocument.ContentStart, editorDocument.ContentEnd).Text, FileType.HTML, FileType.Markdown);
-           //         e.Result = html;
-           //     });
-           //
-           //     worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-           //     worker.RunWorkerAsync();
-           // }
-           // else
-           // {
-           //     previewWindow.Visibility = Visibility.Hidden;
-           // }
+            var page = FileManager.CurrentFile.Page;
+
+           if (page.previewWindow.Visibility == Visibility.Hidden)
+           {
+               BackgroundWorker worker = new BackgroundWorker();
+               string html = "";
+               worker.DoWork += ((object sender, DoWorkEventArgs e) =>
+               {
+                   html = TextHandler.Convert(new TextRange(page.editorDocument.ContentStart, page.editorDocument.ContentEnd).Text, FileType.HTML, FileType.Markdown);
+                   e.Result = html;
+               });
+           
+               worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+               worker.RunWorkerAsync();
+           }
+           else
+           {
+               page.previewWindow.Visibility = Visibility.Hidden;
+               page.editorTextBox.Visibility = Visibility.Visible;
+            }
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-           // previewWindow.NavigateToString(e.Result.ToString());
-           // previewWindow.Visibility = Visibility.Visible;
+            var page = FileManager.CurrentFile.Page;
+
+            page.previewWindow.NavigateToString(e.Result.ToString());
+            page.previewWindow.Visibility = Visibility.Visible;
+            page.editorTextBox.Visibility = Visibility.Hidden;
         }
 
         private void previewButton_Click(object sender, RoutedEventArgs e)
@@ -256,23 +299,9 @@ namespace Phantom
 
         private void newFileButton_Click(object sender, RoutedEventArgs e)
         {
-            if (savedSinceLastChange)
-            {
-                ResetDocument();
-            }
-            else
-            {
-                MessageBoxResult msg = MessageBox.Show("You have unsaved changes.  Would you like to save the current file before creating a new one?", "", MessageBoxButton.YesNoCancel);
-
-                if (msg == MessageBoxResult.Yes)
-                {
-                    SaveFile();
-                }
-                else if (msg == MessageBoxResult.Cancel)
-                    return;
-
-                ResetDocument();
-            }
+            var file = new EditorFile("New File");
+            FileManager.Files.Add(file);
+            FocusOpenedFile(file);
         }
 
         private void ResetDocument()
@@ -327,6 +356,16 @@ namespace Phantom
                 // it was just regular input.  we changed the document, so let's make sure we know we have unsaved changes
                 MarkFileAsUnsaved();
             }
+        }
+
+        private void closeFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            CloseCurrentFile();
+        }
+
+        private void Grid_Drop(object sender, DragEventArgs e)
+        {
+            OpenFile();
         }
     }
 }

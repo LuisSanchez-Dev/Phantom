@@ -46,6 +46,7 @@ namespace Phantom
     {
         None = 0,
         Markdown = 1,
-        HTML = 2
+        HTML = 2,
+        Text = 3
     }
 }

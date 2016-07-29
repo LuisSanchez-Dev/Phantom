@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,11 +49,18 @@ namespace Phantom
         }
 
 
-
-
         public EditorFile(string name, FileType fileType = FileType.Markdown)
         {
             Name = name;
+            FileType = fileType;
+        }
+
+        // used usually for opening files
+        // kind of a hack
+        public EditorFile(bool fullPath, string filePath, FileType fileType = FileType.Markdown)
+        {
+            Name = Path.GetFileName(filePath);
+            FilePath = filePath;
             FileType = fileType;
         }
 

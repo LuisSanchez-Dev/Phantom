@@ -15,7 +15,7 @@ namespace Phantom
         public static ObservableCollection<EditorFile> Files = new ObservableCollection<EditorFile>();
         public static EditorFile CurrentFile;
 
-        public static void AddAndFocus(string name)
+        public static void AddAndFocus(string name, FileType fileType = FileType.Markdown)
         {
             var newFile = new EditorFile(name);
             Files.Add(newFile);
