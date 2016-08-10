@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         ResizeMode="NoResize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="About Phantom" Height="270" Width="400">
+        Title="About Phantom" Height="240" Width="400">
     <Grid>
         <Border Margin="16">
             <StackPanel>
@@ -32,30 +32,19 @@
                             Template="{StaticResource TextButtonTemplate}"
                             Content="Website" Click="websiteButton_Click"
                               />
+
+                    <Separator Background="Transparent" Margin="0,0,10,0"></Separator>
+
+                    <Button x:Name="softwareButton"
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource TextButtonStyle}"
+                            Template="{StaticResource TextButtonTemplate}"
+                            Content="Licenses" Click="softwareButton_Click"
+                              />
                 </StackPanel>
 
                 <Separator Background="Transparent" Margin="0,20,0,0"></Separator>
                 
-                <ScrollViewer>
-                    <StackPanel>
-
-                    
-                    <UniformGrid Columns="3">
-                        
-                        <TextBlock FontSize="10" HorizontalAlignment="Center">
-                            <Hyperlink NavigateUri="https://github.com/squirrel/Squirrel.Windows" RequestNavigate="Hyperlink_RequestNavigate">Squirrel</Hyperlink>
-                        </TextBlock>
-                            <TextBlock FontSize="10" HorizontalAlignment="Center">
-                            <Hyperlink NavigateUri="https://github.com/baynezy/Html2Markdown" RequestNavigate="Hyperlink_RequestNavigate">Html2Markdown</Hyperlink>
-                             
-                        </TextBlock>
-                            <TextBlock FontSize="10" HorizontalAlignment="Center">
-                            <Hyperlink NavigateUri="https://www.gnome.org/fonts/" RequestNavigate="Hyperlink_RequestNavigate">Vera Sans </Hyperlink>
-                           
-                        </TextBlock>
-                    </UniformGrid>
-                    </StackPanel>
-                </ScrollViewer>
 
             </StackPanel>
         </Border>

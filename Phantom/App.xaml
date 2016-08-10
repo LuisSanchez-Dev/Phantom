@@ -5,13 +5,16 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
+        <local:BoolToInvertedVisibilityConverter x:Key="boolToInvertedVisibilityConverter"/>
+        
         <Color x:Key="BackgroundGrey">#E9EEF0</Color>
         <SolidColorBrush x:Key="BackgroundGreyBrush" Color="{StaticResource BackgroundGrey}"/>
 
         <Color x:Key="MediumGrey">#C7D0D4</Color>
         <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource MediumGrey}"/>
 
-        <Color x:Key="SelectBlue">#C5D9E6</Color>
+        <Color x:Key="SelectBlue">#CAE9FC</Color>
+        <SolidColorBrush x:Key="SelectBlueBrush" Color="{StaticResource SelectBlue}"></SolidColorBrush>
 
         <Color x:Key="Dark">#373F45</Color>
         <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource Dark}"></SolidColorBrush>
@@ -406,6 +409,124 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <SolidColorBrush x:Key="ListBox.Static.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ListBox.Static.Border" Color="#FFABADB3"/>
+        <SolidColorBrush x:Key="ListBox.Disabled.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="ListBox.Disabled.Border" Color="#FFD9D9D9"/>
+
+
+
+        <DataTemplate x:Key="FileTemplate">
+            <Border Padding="4,8,4,8" ToolTip="{Binding FilePath}">
+                <DockPanel>
+                    <Label Content="&#xe656;" 
+                           FontFamily="/Phantom;component/Fonts/#Pe-icon-7-stroke"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource DarkBrush}"
+                           />
+                    <Label Content="{Binding Name}" Foreground="{StaticResource DarkBrush}" />
+                    <Label Content="*" 
+                           Visibility="{Binding IsSaved, Converter={StaticResource boolToInvertedVisibilityConverter}}" 
+                           HorizontalAlignment="Left"
+                           Foreground="{StaticResource DarkBrush}"
+                           />
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+
+        
+        
+        
+        
+        
+
+
+        <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="Foreground" Value="{DynamicResource BlackBrush}" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="MinHeight" Value="25" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="Border.BorderBrush" Value="{DynamicResource Gray3}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                            <Grid>
+                                <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <ContentPresenter x:Name="contentPresenter" Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="GridView.ColumnCollection" Value="{x:Null}">
+                                <Setter TargetName="contentPresenter" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF143c65" />
+                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource SelectBlueBrush}"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource SelectBlue}" Opacity="0.5"/>
+                                    </Setter.Value>
+                                </Setter>
+
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true" />
+                                    <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource SelectBlue}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF143c65" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True" />
+                                    <Condition Property="Selector.IsSelectionActive" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource SelectBlue}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF143c65" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <!--<Style.Triggers>
+      <Trigger Property="ItemsControl.AlternationIndex"
+               Value="0">
+        <Setter Property="Background"
+                Value="{DynamicResource AlternateRow1BackgroundBrush}" />
+      </Trigger>
+      <Trigger Property="ItemsControl.AlternationIndex"
+               Value="1">
+        <Setter Property="Background"
+                Value="{DynamicResource AlternateRow2BackgroundBrush}" />
+        <Setter Property="Border.BorderThickness"
+                Value="0 1 0 1" />
+      </Trigger>
+    </Style.Triggers>-->
+        </Style>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

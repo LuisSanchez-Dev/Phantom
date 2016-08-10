@@ -56,10 +56,10 @@ namespace Phantom
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // open a new file
-            var file = new EditorFile("New File");
-            FileManager.Files.Add(file);
-            FileManager.CurrentFile = file;
-            FocusOpenedFile(file);
+            // var file = new EditorFile("New File");
+            // FileManager.Files.Add(file);
+            // FileManager.CurrentFile = file;
+            // FocusOpenedFile(file);
             
             // check for updates
             Updater.BeginUpdateTimer();

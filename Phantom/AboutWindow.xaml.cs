@@ -19,6 +19,8 @@ namespace Phantom
     /// </summary>
     public partial class AboutWindow : Window
     {
+        public SoftwarePage swp = new SoftwarePage();
+
         public string Version
         {
             get { return "Phantom Version " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
@@ -41,13 +43,11 @@ namespace Phantom
 
         private void softwareButton_Click(object sender, RoutedEventArgs e)
         {
+            if (swp != null && swp.IsActive)
+                swp.Close();
 
+            swp.Show();
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
-            e.Handled = true;
-        }
     }
 }

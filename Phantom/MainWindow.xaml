@@ -75,20 +75,8 @@
                       BorderBrush="{StaticResource BackgroundGreyBrush}" 
                       BorderThickness="0,0,1,0"
                       SelectionChanged="fileListView_SelectionChanged"
+                      ItemTemplate="{StaticResource FileTemplate}"
                       >
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel>
-                            <Label Content="{Binding Name}" />
-                            <Label Content="*" Visibility="{Binding IsSaved, Converter={StaticResource boolToInvertedVisibilityConverter}}" HorizontalAlignment="Left"/>
-                        </DockPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
             </ListView>
         </Border>
 
